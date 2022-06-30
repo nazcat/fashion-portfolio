@@ -1,16 +1,20 @@
-var offset = 100;
+const targets = document.querySelectorAll(".colored");
+const isAnimated = "is-animated";
+const threshold = 0.5;
 
-$(window).scroll(function(){
-
-    var $elem = $(".magic"),
-        topDist = $elem.offset().top - $(this).scrollTop(),
-        bottomDist = $elem.offset().top + $elem.height() - $(this).scrollTop();
-
-    if (topDist < offset && bottomDist > offset) {
-        // (turn on colors)
-        $elem.css("background-color","red");
+function callback(entries, observer) {
+  entries.forEach((entry) => {
+    const elem = entry.target;
+    if (entry.intersectionRatio >= threshold) {
+      elem.classList.add(isAnimated);
+      //observer.unobserve(elem);
     } else {
-        // (turn off colors)
-        $elem.css("background-color","gray");
+      elem.classList.remove(isAnimated);
     }
-});
+  });
+}
+
+const observer = new IntersectionObserver(callback, { threshold });
+for (const target of targets) {
+  observer.observe(target);
+}
